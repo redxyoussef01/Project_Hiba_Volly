@@ -1,104 +1,155 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Users, Star, Book, Video, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
+
+interface Enrollment {
+  id: number;
+  quiz: {
+    id: number;
+  };
+}
 
 const CourseDetails4: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Course data for Level 4
-  const course = {
-    id: id,
-    title: 'Niveau 4 : Excellence et Compétition',
-    description: 'Formation d\'élite pour les joueurs visant la compétition de haut niveau et le professionnalisme.',
-    instructor: 'Sophie Bernard',
-    duration: '12 semaines',
-    level: 'Expert',
-    rating: 5.0,
-    image: '/src/assets/background/background4.jpg',
-    overview: 'Ce programme d\'excellence est conçu pour les joueurs d\'élite souhaitant atteindre un niveau professionnel. Il combine des techniques de pointe, des stratégies complexes et un entraînement physique intensif pour préparer les joueurs à la compétition internationale.',
-    objectives: [
-      'Maîtriser les techniques de niveau international',
-      'Développer une vision tactique exceptionnelle',
-      'Optimiser la performance physique et mentale',
-      'Acquérir des compétences de leadership avancées',
-      'Préparer les joueurs pour la compétition internationale'
-    ],
-    requirements: [
-      'Avoir complété le niveau 3 ou équivalent',
-      'Minimum 3 ans d\'expérience en volley-ball',
-      'Niveau compétitif national',
-      'Excellente condition physique',
-      'Engagement total à l\'entraînement intensif'
-    ],
-    modules: [
-      {
-        title: 'Techniques d\'Élite',
-        content: [
-          'Attaque en position 3 et 1 avancée',
-          'Contre et défense de niveau international',
-          'Service de pointe et variations complexes',
-          'Réception en zone 1 et 6 avancée',
-          'Techniques défensives d\'élite'
-        ]
-      },
-      {
-        title: 'Stratégies Internationales',
-        content: [
-          'Systèmes de jeu de niveau international',
-          'Schémas d\'attaque complexes',
-          'Stratégies défensives avancées',
-          'Analyse vidéo détaillée',
-          'Adaptation tactique en temps réel'
-        ]
-      },
-      {
-        title: 'Performance Physique',
-        content: [
-          'Programme d\'entraînement d\'élite',
-          'Exercices de puissance maximale',
-          'Travail de la pliométrie avancée',
-          'Récupération et prévention des blessures',
-          'Nutrition pour la performance de haut niveau'
-        ]
-      },
-      {
-        title: 'Préparation Mentale',
-        content: [
-          'Gestion du stress et de la pression',
-          'Visualisation et concentration',
-          'Leadership et communication',
-          'Analyse post-match et feedback',
-          'Préparation aux compétitions internationales'
-        ]
+  const isLoggedIn = !!localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId');
+  const courseId = 4; // Fixed ID for CourseDetails4
+
+  useEffect(() => {
+    const checkEnrollment = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
       }
-    ]
-  };
+
+      try {
+        const response = await axios.get<Enrollment[]>(`${config.apiUrl}/enrollments/${userId}`);
+        const enrollments = response.data;
+        const isEnrolledInCourse = enrollments.some(
+          (enrollment) => enrollment.quiz.id === courseId
+        );
+        setIsEnrolled(isEnrolledInCourse);
+      } catch (error) {
+        console.error('Error checking enrollment:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkEnrollment();
+  }, [userId]);
 
   const handleEnroll = async () => {
-    const userId = localStorage.getItem('userId');
-    
-    if (!userId) {
-      // If user is not logged in, redirect to login page
+    if (!isLoggedIn) {
       navigate('/login');
       return;
     }
 
     try {
-      // Call the enrollment endpoint
-      await axios.post('http://localhost:3000/enroll', {
+      await axios.post(`${config.apiUrl}/enroll`, {
         userId: userId,
-        quizId: 4
+        courseId: courseId
       });
-
-      // If enrollment is successful, navigate to level4
-      navigate('/level4');
+      setIsEnrolled(true);
+      navigate(`/level${courseId}`);
     } catch (error) {
       console.error('Error enrolling in course:', error);
-      // You might want to show an error message to the user here
     }
+  };
+
+  const handleContinue = () => {
+    navigate(`/level${courseId}`);
+  };
+
+  const getButtonText = () => {
+    if (!isLoggedIn) return "S'inscrire";
+    if (isEnrolled) return "Continuer";
+    return "Enroll";
+  };
+
+  const handleButtonClick = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else if (isEnrolled) {
+      handleContinue();
+    } else {
+      handleEnroll();
+    }
+  };
+
+  // Course data for Level 4
+  const course = {
+    id: courseId,
+    title: 'Niveau 4 : Maîtrise Professionnelle',
+    description: 'Atteignez l\'excellence avec des techniques et stratégies de niveau international.',
+    instructor: 'Sophie Moreau',
+    duration: '12 semaines',
+    level: 'Expert',
+    rating: 5.0,
+    image: '/src/assets/background/background4.jpg',
+    overview: 'Ce cours de niveau expert est conçu pour les joueurs aspirant à une carrière professionnelle. Il combine des techniques de pointe, des stratégies avancées et une préparation mentale intensive.',
+    objectives: [
+      'Maîtriser les techniques de niveau international',
+      'Développer une vision tactique exceptionnelle',
+      'Perfectionner la préparation physique et mentale',
+      'Acquérir des compétences de leadership d\'élite',
+      'Préparer les joueurs pour la compétition internationale'
+    ],
+    requirements: [
+      'Maîtrise complète des niveaux 1, 2 et 3',
+      'Expérience en compétition de haut niveau',
+      'Condition physique d\'élite',
+      'Engagement à l\'entraînement intensif',
+      'Volonté d\'atteindre un niveau professionnel'
+    ],
+    modules: [
+      {
+        title: 'Techniques d\'Élite',
+        content: [
+          'Attaques de niveau international',
+          'Contres et défenses spécialisés',
+          'Services tactiques d\'élite',
+          'Réception en situation de pression maximale',
+          'Techniques défensives de pointe'
+        ]
+      },
+      {
+        title: 'Stratégies Internationales',
+        content: [
+          'Analyse approfondie des équipes internationales',
+          'Systèmes de jeu de niveau mondial',
+          'Adaptation tactique en temps réel',
+          'Gestion des situations de haute pression',
+          'Stratégies de fin de match critiques'
+        ]
+      },
+      {
+        title: 'Performance d\'Élite',
+        content: [
+          'Programme d\'entraînement international',
+          'Optimisation maximale de la condition physique',
+          'Préparation mentale de haut niveau',
+          'Récupération et nutrition professionnelles',
+          'Prévention des blessures de niveau élite'
+        ]
+      },
+      {
+        title: 'Leadership d\'Élite',
+        content: [
+          'Gestion d\'équipe en compétition internationale',
+          'Communication tactique de niveau expert',
+          'Analyse vidéo professionnelle avancée',
+          'Développement des compétences de capitaine d\'élite',
+          'Optimisation de la performance d\'équipe de haut niveau'
+        ]
+      }
+    ]
   };
 
   return (
@@ -145,10 +196,17 @@ const CourseDetails4: React.FC = () => {
             </div>
             <div className="mt-6 md:mt-0">
               <button
-                onClick={handleEnroll}
-                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                onClick={handleButtonClick}
+                disabled={isLoading}
+                className={`inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white ${
+                  isLoading 
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : isEnrolled 
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
-                S'inscrire
+                {isLoading ? 'Loading...' : getButtonText()}
               </button>
             </div>
           </div>

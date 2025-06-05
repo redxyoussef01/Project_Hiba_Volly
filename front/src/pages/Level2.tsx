@@ -5,7 +5,7 @@ const Level2: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const navigate = useNavigate();
-
+  const quizId = 2;
   const tabs = [
     { title: "Techniques de Service", id: 0 },
     { title: "Planification Saison", id: 1 },
@@ -43,7 +43,7 @@ const Level2: React.FC = () => {
 
   const handleTabClick = (tabId: number) => {
     if (tabId === 4) {
-      navigate('/quiz');
+      navigate(`/test/${quizId}`);
     } else {
       setActiveTab(tabId);
     }
@@ -257,20 +257,20 @@ const Level2: React.FC = () => {
                           { 
                             title: 'Principes fondamentaux de VB', 
                             icon: '📄',
-                            path: '/assets/niveau2/principes_fondamentaux.PDF',
-                            filename: 'principes_fondamentaux.PDF'
+                            path: '/src/assets/niveau2/Principes fondamentaux de VB.pdf',
+                            filename: 'Principes fondamentaux de VB.pdf'
                           },
                           { 
                             title: 'Special Olympics Guide d\'Entraînement VB', 
                             icon: '📄',
-                            path: '/assets/niveau2/special_olympics_guide.PDF',
-                            filename: 'special_olympics_guide.PDF'
+                            path: '/src/assets/niveau2/Special Olympics Guide dEntraînemente VB.pdf',
+                            filename: 'Special Olympics Guide dEntraînemente VB.pdf'
                           },
                           { 
                             title: 'Apprendre à entraîner et organiser une équipe', 
                             icon: '📄',
-                            path: '/assets/niveau2/apprendre_entrainer.PDF',
-                            filename: 'apprendre_entrainer.PDF'
+                            path: '/src/assets/niveau2/Apprendre à entraîner et organiser une équipe.pdf',
+                            filename: 'Apprendre à entraîner et organiser une équipe.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -317,14 +317,14 @@ const Level2: React.FC = () => {
                           { 
                             title: 'LES FONDAMENTAUX technique', 
                             icon: '📄',
-                            path: '/assets/niveau2/fondamentaux_technique.PDF',
-                            filename: 'fondamentaux_technique.PDF'
+                            path: '/src/assets/niveau2/LES FONDAMENTAUX technique.pdf',
+                            filename: 'LES FONDAMENTAUX technique.pdf'
                           },
                           { 
                             title: 'Tactique pour jouer le volleyball', 
                             icon: '📄',
-                            path: '/assets/niveau2/tactique_volleyball.PDF',
-                            filename: 'tactique_volleyball.PDF'
+                            path: '/src/assets/niveau2/tactique du volley ball.pdf',
+                            filename: 'tactique du volley ball.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">

@@ -4,11 +4,39 @@ const bcrypt = require("bcrypt");
 import { Question } from "./entity/Question";
 import { Note } from "./entity/Note";
 import { Request, Response } from "express";
-import { In } from "typeorm";
+import { In, Not, IsNull } from "typeorm";
 import { User } from "./entity/User";
 import { Enroll } from "./entity/Enroll";
 
 module.exports = function (app, AppDataSource) {
+
+  app.post("/quiz", async (req, res) => {
+    try {
+      const QuizRepo = AppDataSource.getRepository(Quiz);
+
+      const { title, description, makerId, temps, note  } = req.body;
+
+      // Create a new quiz
+      const newQuiz = new Quiz();
+
+      newQuiz.title = title;
+      newQuiz.description = description;
+      newQuiz.makerId = makerId;
+      newQuiz.temps = temps;
+      newQuiz.note = note;
+
+      // Save the quiz to get its ID
+      const savedQuiz = await QuizRepo.save(newQuiz);     
+      res.status(201).json({ 
+        message: "Quiz created successfully",
+        quizId: savedQuiz.id 
+      });
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   app.post("/createqst", async (req, res) => {
     try {
       const QstRepo = AppDataSource.getRepository(Question);
@@ -95,8 +123,18 @@ module.exports = function (app, AppDataSource) {
   app.get("/listQuiz", async (req, res) => {
     try {
       const quizRepo = AppDataSource.getRepository(Quiz);
-      const quizzes = await quizRepo.find({ relations: ["questions"] });
-      res.status(200).json(quizzes);
+      const quizzes = await quizRepo
+        .createQueryBuilder("quiz")
+        .leftJoinAndSelect("quiz.questions", "questions")
+        .getMany();
+
+      // Transform the data to include question count
+      const quizzesWithQuestionCount = quizzes.map(quiz => ({
+        ...quiz,
+        questionCount: quiz.questions ? quiz.questions.length : 0
+      }));
+
+      res.status(200).json(quizzesWithQuestionCount);
     } catch (error) {
       console.error("Error listing quizzes:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -105,13 +143,25 @@ module.exports = function (app, AppDataSource) {
 
   app.get("/getQuiz/:id", async (req, res) => {
     try {
-      const quizId = req.params.id;
+      const quizId = parseInt(req.params.id);
       const quizRepo = AppDataSource.getRepository(Quiz);
-      const quiz = await quizRepo.findOne(quizId, { relations: ["questions"] });
+      
+      const quiz = await quizRepo.findOne({
+        where: { id: quizId },
+        relations: ["questions"]
+      });
+
       if (!quiz) {
         return res.status(404).json({ error: "Quiz not found" });
       }
-      res.status(200).json(quiz);
+
+      // Transform the data to include question count
+      const quizWithQuestionCount = {
+        ...quiz,
+        questionCount: quiz.questions ? quiz.questions.length : 0
+      };
+
+      res.status(200).json(quizWithQuestionCount);
     } catch (error) {
       console.error("Error getting quiz:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -205,26 +255,61 @@ module.exports = function (app, AppDataSource) {
     try {
       const { quizId, userId } = req.body;
       const NoteRepo = AppDataSource.getRepository(Note);
-      const newNt = new Note();
-      newNt.note = req.body.note;
       const qzRepo = AppDataSource.getRepository(Quiz);
+      const UserRepo = AppDataSource.getRepository(User);
+
+      // Find the quiz and user
       const myquiz = await qzRepo.findOne({
         where: isNaN(quizId) ? { id: null } : { id: quizId },
       });
       if (!myquiz) {
         return res.status(404).json({ error: "Quiz not found" });
       }
-      newNt.quiz = myquiz;
-      const UserRepo = AppDataSource.getRepository(User);
+
       const myuser = await UserRepo.findOne({
         where: isNaN(userId) ? { id: null } : { id: userId },
       });
       if (!myuser) {
         return res.status(404).json({ error: "User not found" });
       }
+
+      // Check if user has already taken this quiz
+      const existingNote = await NoteRepo.findOne({
+        where: {
+          quiz: { id: quizId },
+          user: { id: userId }
+        }
+      });
+
+      if (existingNote) {
+        // If new score is higher, update the existing note
+        if (req.body.note > existingNote.note) {
+          existingNote.note = req.body.note;
+          await NoteRepo.save(existingNote);
+          return res.status(200).json({ 
+            message: "Note updated with higher score",
+            noteId: existingNote.id 
+          });
+        } else {
+          // If new score is lower or equal, return the existing note
+          return res.status(200).json({ 
+            message: "Existing note is higher or equal",
+            noteId: existingNote.id 
+          });
+        }
+      }
+
+      // If no existing note, create a new one
+      const newNt = new Note();
+      newNt.note = req.body.note;
+      newNt.quiz = myquiz;
       newNt.user = myuser;
       await NoteRepo.save(newNt);
-      res.status(202).json({ message: "Note created successfully" });
+      
+      res.status(201).json({ 
+        message: "New note created",
+        noteId: newNt.id 
+      });
     } catch (error) {
       console.error("Error creating Note:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -266,18 +351,98 @@ module.exports = function (app, AppDataSource) {
   });
   app.get("/listNote", async (req, res) => {
     try {
-      // Get the repository for the Note entity
       const NtRepo = AppDataSource.getRepository(Note);
+      const QuizRepo = AppDataSource.getRepository(Quiz);
+
+      // Get query parameters for sorting
+      const sortBy = req.query.sortBy as string || 'note';
+      const sortOrder = req.query.sortOrder as 'ASC' | 'DESC' || 'DESC';
 
       // Retrieve all notes with their associated quizzes and users
-      const notes = await NtRepo.find({ relations: ["quiz", "user"] });
+      const notes = await NtRepo.find({ 
+        relations: ["quiz", "user"],
+        order: {
+          [sortBy]: sortOrder
+        }
+      });
 
-      // Return the formatted notes
-      res.status(200).json(notes);
+      // Get the number of questions for each quiz
+      const notesWithQuestions = await Promise.all(notes.map(async (note) => {
+        try {
+          const quiz = await QuizRepo.findOne({
+            where: { id: note.quiz.id },
+            relations: ["questions"]
+          });
+          
+          if (!quiz || !quiz.questions) {
+            console.warn(`Quiz ${note.quiz.id} has no questions`);
+            return null;
+          }
+
+          const totalQuestions = quiz.questions.length;
+          if (totalQuestions === 0) {
+            console.warn(`Quiz ${note.quiz.id} has 0 questions`);
+            return null;
+          }
+
+          const passingScore = Math.ceil(totalQuestions * 0.5);
+          
+          return {
+            ...note,
+            totalQuestions,
+            passingScore,
+            hasPassed: note.note >= passingScore,
+            percentage: Math.round((note.note / totalQuestions) * 100)
+          };
+        } catch (error) {
+          console.error(`Error processing note ${note.id}:`, error);
+          return null;
+        }
+      }));
+
+      // Filter out null values and notes that haven't passed
+      const passedNotes = notesWithQuestions
+        .filter((note): note is NonNullable<typeof note> => 
+          note !== null && note.hasPassed
+        );
+
+      res.status(200).json(passedNotes);
     } catch (error) {
-      // Handle errors
       console.error("Error listing notes:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ 
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Add endpoint to issue certificate
+  app.put("/notes/:id/certificate", async (req: Request, res: Response) => {
+    try {
+      const noteId = parseInt(req.params.id);
+      const NtRepo = AppDataSource.getRepository(Note);
+      
+      const note = await NtRepo.findOne({
+        where: { id: noteId }
+      });
+
+      if (!note) {
+        return res.status(404).json({ error: "Note not found" });
+      }
+
+      note.certificate = true;
+      await NtRepo.save(note);
+
+      res.status(200).json({ 
+        message: "Certificate issued successfully",
+        note 
+      });
+    } catch (error) {
+      console.error("Error issuing certificate:", error);
+      res.status(500).json({ 
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
@@ -291,17 +456,19 @@ module.exports = function (app, AppDataSource) {
       const trimmedEmail = email.trim();
       const trimmedPassword = password.trim();
 
-      // Find the account based on the trimmed email
-      const account = await AppDataSource.manager.findOne(Account, {
-        where: { email: trimmedEmail },
+      // Find the user based on the account email
+      const user = await AppDataSource.manager.findOne(User, {
+        where: { account: { email: trimmedEmail } },
+        relations: ["account"]
       });
-      if (!account) {
+
+      if (!user || !user.account) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
 
       const passwordMatch = await bcrypt.compare(
         trimmedPassword,
-        account.password
+        user.account.password
       );
       if (!passwordMatch) {
         return res
@@ -311,8 +478,10 @@ module.exports = function (app, AppDataSource) {
 
       const response = {
         message: "Login successful",
-        userId: account.id,
-        type: account.type,
+        userId: user.id,
+        type: user.account.type,
+        firstName: user.firstName,
+        lastName: user.lastName
       };
 
       res.status(200).json(response);
@@ -488,7 +657,7 @@ module.exports = function (app, AppDataSource) {
       });
 
       if (existingEnroll) {
-        return res.status(400).json({ error: "User is already enrolled in this quiz" });
+        return res.status(201).json({ message: "User is already enrolled in this quiz" });
       }
 
       // Create new enrollment
@@ -511,7 +680,20 @@ module.exports = function (app, AppDataSource) {
     try {
       const enrollRepo = AppDataSource.getRepository(Enroll);
       const enrollments = await enrollRepo.find({
-        relations: ["user", "quiz"]
+        relations: ["user", "quiz"],
+        select: {
+          id: true,
+          user: {
+            id: true,
+            firstName: true,
+            lastName: true
+          },
+          quiz: {
+            id: true,
+            title: true,
+            description: true
+          }
+        }
       });
       res.status(200).json(enrollments);
     } catch (error) {
@@ -583,6 +765,98 @@ module.exports = function (app, AppDataSource) {
     } catch (error) {
       console.error("Error deleting enrollment:", error);
       res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Modified endpoint to create and assign questions to a quiz
+  app.put("/quiz/:quizId/questions", async (req, res) => {
+    try {
+      const QuizRepo = AppDataSource.getRepository(Quiz);
+      const QuestionRepo = AppDataSource.getRepository(Question);
+      const { quizId } = req.params;
+      const { questions } = req.body; // Array of question objects
+
+      if (!questions || !Array.isArray(questions)) {
+        return res.status(400).json({ error: "Questions array is required" });
+      }
+
+      // Find the quiz with its questions
+      const quiz = await QuizRepo.findOne({
+        where: { id: parseInt(quizId) },
+        relations: ["questions"]
+      });
+
+      if (!quiz) {
+        return res.status(404).json({ error: "Quiz not found" });
+      }
+
+      // Delete all existing questions for this quiz
+      await QuestionRepo.delete({ quiz: { id: parseInt(quizId) } });
+
+      // Create and save new questions
+      const createdQuestions = await Promise.all(
+        questions.map(async (questionData) => {
+          const { qst, option1, option2, option3, option4, answeris } = questionData;
+          const newQuestion = new Question();
+          newQuestion.qst = qst;
+          newQuestion.option1 = option1;
+          newQuestion.option2 = option2;
+          newQuestion.option3 = option3;
+          newQuestion.option4 = option4;
+          newQuestion.answeris = answeris;
+          newQuestion.quiz = quiz;
+          return await QuestionRepo.save(newQuestion);
+        })
+      );
+
+      // Update the quiz's questions array
+      quiz.questions = createdQuestions;
+      await QuizRepo.save(quiz);
+
+      // Fetch the updated quiz with its questions
+      const updatedQuiz = await QuizRepo.findOne({
+        where: { id: parseInt(quizId) },
+        relations: ["questions"]
+      });
+
+      res.status(200).json({ 
+        message: "Questions updated successfully",
+        quiz: updatedQuiz
+      });
+    } catch (error) {
+      console.error("Error updating questions for quiz:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Get user certificates
+  app.get("/notes/user/:userId", async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const NoteRepo = AppDataSource.getRepository(Note);
+      
+      const notes = await NoteRepo.find({
+        where: { user: { id: userId } },
+        relations: ['quiz', 'user'],
+        order: { id: 'DESC' }
+      });
+
+      // Calculate additional fields for each note
+      const notesWithDetails = notes.map(note => ({
+        ...note,
+        hasPassed: note.note >= note.quiz.note,
+        percentage: (note.note / note.quiz.note) * 100,
+        totalQuestions: note.quiz.questions?.length || 0,
+        passingScore: note.quiz.note
+      }));
+
+      res.status(200).json(notesWithDetails);
+    } catch (error) {
+      console.error("Error fetching user certificates:", error);
+      res.status(500).json({ 
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
+import config from '../config';
 
 interface RegisterForm {
   firstName: string;
@@ -51,12 +52,15 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/students', {
-        email: formData.email.trim(),
-        password: formData.password.trim(),
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim()
-      });
+      const response = await axios.post(
+        `${config.apiUrl}/students`,
+        {
+          email: formData.email.trim(),
+          password: formData.password.trim(),
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim()
+        }
+      );
 
       // Store user data in localStorage
       localStorage.setItem('userId', response.data.id);

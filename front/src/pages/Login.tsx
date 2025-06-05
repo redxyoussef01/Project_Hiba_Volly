@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import config from '../config';
 
 interface LoginForm {
   email: string;
@@ -12,6 +13,8 @@ interface LoginForm {
 interface LoginResponse {
   userId: string;
   type: string;
+  firstName: string;
+  lastName: string;
 }
 
 const Login = () => {
@@ -37,14 +40,19 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post<LoginResponse>('http://localhost:3000/login', {
-        email: formData.email.trim(),
-        password: formData.password.trim()
-      });
+      const response = await axios.post<LoginResponse>(
+        `${config.apiUrl}/login`,
+        {
+          email: formData.email.trim(),
+          password: formData.password.trim()
+        }
+      );
 
       // Store user data in localStorage
       localStorage.setItem('userId', response.data.userId);
       localStorage.setItem('userType', response.data.type);
+      localStorage.setItem('firstName', response.data.firstName);
+      localStorage.setItem('lastName', response.data.lastName);
 
       // Update auth context
       checkLoginStatus();

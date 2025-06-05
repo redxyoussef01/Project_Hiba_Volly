@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Level3: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
-
+  const quizId = 3;
   const tabs = [
     { title: "Outils d'Entraîneur", id: 0 },
     { title: "Lecture du Jeu", id: 1 },
@@ -15,7 +15,8 @@ const Level3: React.FC = () => {
 
   const handleTabClick = (tabId: number) => {
     if (tabId === 4) {
-      navigate('/quiz');
+      localStorage.setItem('currentQuizId', quizId.toString());
+      navigate(`/test/${quizId}`);
     } else {
       setActiveTab(tabId);
     }
@@ -73,8 +74,8 @@ const Level3: React.FC = () => {
                           { 
                             title: 'Outils d\'entraîneur', 
                             icon: '📄',
-                            path: '/assets/niveau3/outils_entraineur.PDF',
-                            filename: 'outils_entraineur.PDF'
+                            path: '/src/assets/niveau3/OUTILS ENTRAINEURS Dossier FAVB.pdf',
+                            filename: 'OUTILS ENTRAINEURS Dossier FAVB.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -107,8 +108,8 @@ const Level3: React.FC = () => {
                           { 
                             title: 'Volleyball DE A à Z', 
                             icon: '📄',
-                            path: '/assets/niveau3/volleyball_a_z.PDF',
-                            filename: 'volleyball_a_z.PDF'
+                            path: '/src/assets/niveau3/Volleyball DE A à Z.pdf',
+                            filename: 'Volleyball DE A à Z.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -175,8 +176,8 @@ const Level3: React.FC = () => {
                           { 
                             title: 'Terminologie du Volley-ball FIVB', 
                             icon: '📄',
-                            path: '/assets/niveau3/terminologie_fivb.PDF',
-                            filename: 'terminologie_fivb.PDF'
+                            path: '/src/assets/niveau3/Terminology DU Volley ball par FIVB.pdf',
+                            filename: 'Terminology DU Volley ball par FIVB.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -209,38 +210,38 @@ const Level3: React.FC = () => {
                           { 
                             title: 'Planification d\'unité d\'entraînement', 
                             icon: '📄',
-                            path: '/assets/niveau3/planification_unite.PDF',
-                            filename: 'planification_unite.PDF'
+                            path: '/src/assets/niveau3/Planification dunité dentrainement vb.pdf',
+                            filename: 'Planification dunité dentrainement vb.pdf'
                           },
                           { 
                             title: 'Planifier une saison d\'entraînement et de compétition', 
                             icon: '📄',
-                            path: '/assets/niveau3/planification_saison.PDF',
-                            filename: 'planification_saison.PDF'
+                            path: '/src/assets/niveau3/Planifier une saison d\'entraînement.pdf',
+                            filename: 'Planifier une saison d\'entraînement.pdf'
                           },
                           { 
                             title: 'FICHE D\'EVALUATION VOLLEY BALL EN TERMINALE', 
                             icon: '📄',
-                            path: '/assets/niveau3/evaluation_terminale.PDF',
-                            filename: 'evaluation_terminale.PDF'
+                            path: '/src/assets/niveau3/FICHE DEVALUATION VOLLEY BALL EN TERMINALE.pdf',
+                            filename: 'FICHE DEVALUATION VOLLEY BALL EN TERMINALE.pdf'
                           },
                           { 
                             title: 'Feuille match VB', 
                             icon: '📄',
-                            path: '/assets/niveau3/feuille_match.PDF',
-                            filename: 'feuille_match.PDF'
+                            path: '/src/assets/niveau3/feuille match VB.pdf',
+                            filename: 'feuille match VB.pdf'
                           },
                           { 
                             title: 'Feuilles de match 2', 
                             icon: '📄',
-                            path: '/assets/niveau3/feuilles_match2.PDF',
-                            filename: 'feuilles_match2.PDF'
+                            path: '/src/assets/niveau3/Feuillesdematch 2.pdf',
+                            filename: 'Feuillesdematch 2.pdf'
                           },
                           { 
                             title: 'Coaches Manual Level 2 FIVB', 
                             icon: '📄',
-                            path: '/assets/niveau3/coaches_manual.PDF',
-                            filename: 'coaches_manual.PDF'
+                            path: '/src/assets/niveau3/Coaches_Manual_Level 2 FIVB.pdf',
+                            filename: 'Coaches_Manual_Level 2 FIVB.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">

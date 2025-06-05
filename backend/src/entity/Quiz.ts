@@ -1,9 +1,9 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   ManyToMany,
   JoinTable,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Question } from "./Question";
 

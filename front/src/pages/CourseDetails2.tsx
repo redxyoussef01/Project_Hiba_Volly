@@ -1,104 +1,155 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Users, Star, Book, Video, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
+
+interface Enrollment {
+  id: number;
+  quiz: {
+    id: number;
+  };
+}
 
 const CourseDetails2: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Course data for Level 2
-  const course = {
-    id: id,
-    title: 'Niveau 2 : Perfectionnement Technique',
-    description: 'Approfondissez vos compétences techniques et tactiques pour devenir un joueur plus complet.',
-    instructor: 'Marie Laurent',
-    duration: '6 semaines',
-    level: 'Intermédiaire',
-    rating: 4.9,
-    image: '/src/assets/background/background2.jpg',
-    overview: 'Ce cours intermédiaire se concentre sur l\'amélioration des techniques avancées et la compréhension tactique du jeu. Idéal pour les joueurs ayant déjà une base solide.',
-    objectives: [
-      'Maîtriser les techniques avancées d\'attaque et de défense',
-      'Développer une meilleure lecture du jeu',
-      'Améliorer la coordination d\'équipe et les schémas tactiques',
-      'Perfectionner les techniques de service et de réception',
-      'Acquérir des compétences en leadership et communication'
-    ],
-    requirements: [
-      'Avoir complété le niveau 1 ou équivalent',
-      'Au moins 6 mois d\'expérience en volley-ball',
-      'Bonne condition physique',
-      'Engagement à participer aux sessions pratiques',
-      'Volonté de développer des compétences de leadership'
-    ],
-    modules: [
-      {
-        title: 'Techniques Avancées',
-        content: [
-          'Attaque en position 4 et 2',
-          'Contre avancé et lecture du jeu',
-          'Service flottant et service smashé',
-          'Réception en zone 6 et 5',
-          'Techniques de défense avancées'
-        ]
-      },
-      {
-        title: 'Tactiques et Stratégies',
-        content: [
-          'Systèmes de jeu avancés',
-          'Schémas d\'attaque complexes',
-          'Stratégies défensives spécialisées',
-          'Analyse vidéo et correction technique',
-          'Adaptation tactique pendant le match'
-        ]
-      },
-      {
-        title: 'Conditionnement Physique',
-        content: [
-          'Programme d\'entraînement spécifique',
-          'Exercices de puissance et d\'explosivité',
-          'Travail de la pliométrie',
-          'Récupération et prévention des blessures',
-          'Nutrition pour la performance'
-        ]
-      },
-      {
-        title: 'Leadership et Communication',
-        content: [
-          'Rôles de capitaine et de leader',
-          'Communication efficace sur le terrain',
-          'Gestion du stress et de la pression',
-          'Motivation d\'équipe',
-          'Analyse post-match et feedback'
-        ]
+  const isLoggedIn = !!localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId');
+  const courseId = 2; // Fixed ID for CourseDetails2
+
+  useEffect(() => {
+    const checkEnrollment = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
       }
-    ]
-  };
+
+      try {
+        const response = await axios.get<Enrollment[]>(`${config.apiUrl}/enrollments/${userId}`);
+        const enrollments = response.data;
+        const isEnrolledInCourse = enrollments.some(
+          (enrollment) => enrollment.quiz.id === courseId
+        );
+        setIsEnrolled(isEnrolledInCourse);
+      } catch (error) {
+        console.error('Error checking enrollment:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkEnrollment();
+  }, [userId]);
 
   const handleEnroll = async () => {
-    const userId = localStorage.getItem('userId');
-    
-    if (!userId) {
-      // If user is not logged in, redirect to login page
+    if (!isLoggedIn) {
       navigate('/login');
       return;
     }
 
     try {
-      // Call the enrollment endpoint
-      await axios.post('http://localhost:3000/enroll', {
+      await axios.post(`${config.apiUrl}/enroll`, {
         userId: userId,
-        quizId: 2
+        courseId: courseId
       });
-
-      // If enrollment is successful, navigate to level2
-      navigate('/level2');
+      setIsEnrolled(true);
+      navigate(`/level${courseId}`);
     } catch (error) {
       console.error('Error enrolling in course:', error);
-      // You might want to show an error message to the user here
     }
+  };
+
+  const handleContinue = () => {
+    navigate(`/level${courseId}`);
+  };
+
+  const getButtonText = () => {
+    if (!isLoggedIn) return "S'inscrire";
+    if (isEnrolled) return "Continuer";
+    return "Enroll";
+  };
+
+  const handleButtonClick = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else if (isEnrolled) {
+      handleContinue();
+    } else {
+      handleEnroll();
+    }
+  };
+
+  // Course data for Level 2
+  const course = {
+    id: courseId,
+    title: 'Niveau 2 : Techniques Intermédiaires',
+    description: 'Développez vos compétences avec des techniques avancées et des stratégies de jeu.',
+    instructor: 'Marie Laurent',
+    duration: '6 semaines',
+    level: 'Intermédiaire',
+    rating: 4.7,
+    image: '/src/assets/background/background2.jpg',
+    overview: 'Ce cours intermédiaire se concentre sur le perfectionnement des techniques de base et l\'introduction de stratégies plus avancées. Idéal pour les joueurs ayant une bonne maîtrise des fondamentaux.',
+    objectives: [
+      'Maîtriser les techniques de service avancées',
+      'Perfectionner les passes et les touches',
+      'Développer des stratégies d\'attaque efficaces',
+      'Améliorer la coordination d\'équipe',
+      'Comprendre les tactiques de jeu avancées'
+    ],
+    requirements: [
+      'Maîtrise des fondamentaux du volley-ball',
+      'Expérience de jeu en équipe',
+      'Condition physique intermédiaire',
+      'Engagement à la pratique régulière',
+      'Volonté d\'apprendre des techniques avancées'
+    ],
+    modules: [
+      {
+        title: 'Techniques Avancées',
+        content: [
+          'Service flottant et service smashé',
+          'Passes précises et contrôlées',
+          'Touches techniques et variées',
+          'Attaques puissantes et placées',
+          'Contres efficaces et timing'
+        ]
+      },
+      {
+        title: 'Stratégies de Jeu',
+        content: [
+          'Lecture du jeu adverse',
+          'Positionnement tactique',
+          'Combinaisons d\'attaque',
+          'Systèmes défensifs avancés',
+          'Transitions rapides'
+        ]
+      },
+      {
+        title: 'Conditionnement Physique',
+        content: [
+          'Exercices de puissance',
+          'Agilité et rapidité',
+          'Endurance spécifique',
+          'Pliométrie pour le volley-ball',
+          'Récupération et prévention'
+        ]
+      },
+      {
+        title: 'Analyse de Performance',
+        content: [
+          'Analyse vidéo des matchs',
+          'Statistiques de jeu',
+          'Points d\'amélioration',
+          'Objectifs personnels',
+          'Suivi des progrès'
+        ]
+      }
+    ]
   };
 
   return (
@@ -145,10 +196,17 @@ const CourseDetails2: React.FC = () => {
             </div>
             <div className="mt-6 md:mt-0">
               <button
-                onClick={handleEnroll}
-                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                onClick={handleButtonClick}
+                disabled={isLoading}
+                className={`inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white ${
+                  isLoading 
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : isEnrolled 
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
-                S'inscrire
+                {isLoading ? 'Loading...' : getButtonText()}
               </button>
             </div>
           </div>

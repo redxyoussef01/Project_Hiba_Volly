@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import config from '../config';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -25,13 +26,16 @@ const Contact: React.FC = () => {
     setStatus({ type: 'loading', message: 'Envoi en cours...' });
 
     try {
-      const response = await fetch('http://localhost:3000/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${config.apiUrl}/api/contact`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         setStatus({

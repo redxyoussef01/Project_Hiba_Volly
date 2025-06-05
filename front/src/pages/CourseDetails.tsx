@@ -1,16 +1,91 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Users, Star, Book, Video, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
+
+interface Enrollment {
+  id: number;
+  quiz: {
+    id: number;
+  };
+}
 
 const CourseDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const isLoggedIn = !!localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId');
+  const courseId = 1; // Fixed ID for CourseDetails
+
+  useEffect(() => {
+    const checkEnrollment = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get<Enrollment[]>(`${config.apiUrl}/enrollments/${userId}`);
+        const enrollments = response.data;
+        const isEnrolledInCourse = enrollments.some(
+          (enrollment) => enrollment.quiz.id === courseId
+        );
+        setIsEnrolled(isEnrolledInCourse);
+      } catch (error) {
+        console.error('Error checking enrollment:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkEnrollment();
+  }, [userId]);
+
+  const handleEnroll = async () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await axios.post(`${config.apiUrl}/enroll`, {
+        userId: userId,
+        courseId: courseId
+      });
+      setIsEnrolled(true);
+      navigate(`/level${courseId}`);
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+    }
+  };
+
+  const handleContinue = () => {
+    navigate(`/level${courseId}`);
+  };
+
+  const getButtonText = () => {
+    if (!isLoggedIn) return "S'inscrire";
+    if (isEnrolled) return "Continuer";
+    return "Enroll";
+  };
+
+  const handleButtonClick = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else if (isEnrolled) {
+      handleContinue();
+    } else {
+      handleEnroll();
+    }
+  };
 
   // Course data for Level 1
   const course = {
-    id: id,
+    id: courseId,
     title: 'Niveau 1 : Fondamentaux du Volley-ball',
     description: 'Maîtrisez les bases du volley-ball, y compris le service, la passe et le positionnement de base.',
     instructor: 'Jean Dupont',
@@ -77,30 +152,6 @@ const CourseDetails: React.FC = () => {
     ]
   };
 
-  const handleEnroll = async () => {
-    const userId = localStorage.getItem('userId');
-    
-    if (!userId) {
-      // If user is not logged in, redirect to login page
-      navigate('/login');
-      return;
-    }
-
-    try {
-      // Call the enrollment endpoint
-      await axios.post('http://localhost:3000/enroll', {
-        userId: userId,
-        quizId: 1
-      });
-
-      // If enrollment is successful, navigate to level1
-      navigate('/level1');
-    } catch (error) {
-      console.error('Error enrolling in course:', error);
-      // You might want to show an error message to the user here
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Course Header */}
@@ -145,10 +196,17 @@ const CourseDetails: React.FC = () => {
             </div>
             <div className="mt-6 md:mt-0">
               <button
-                onClick={handleEnroll}
-                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                onClick={handleButtonClick}
+                disabled={isLoading}
+                className={`inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white ${
+                  isLoading 
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : isEnrolled 
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
-                S'inscrire
+                {isLoading ? 'Loading...' : getButtonText()}
               </button>
             </div>
           </div>

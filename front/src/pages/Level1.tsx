@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Level1: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
-
+  const quizId = 1;
   const tabs = [
     { title: "Système 5-1", id: 0 },
     { title: "Techniques de Base", id: 1 },
@@ -16,7 +16,8 @@ const Level1: React.FC = () => {
 
   const handleTabClick = (tabId: number) => {
     if (tabId === 5) {
-      navigate('/quiz');
+      localStorage.setItem('currentQuizId', quizId.toString());
+      navigate(`/test/${quizId}`);
     } else {
       setActiveTab(tabId);
     }
@@ -404,20 +405,20 @@ const Level1: React.FC = () => {
                           { 
                             title: 'Exercices d\'échauffement et étirement', 
                             icon: '📄',
-                            path: '/assets/niveau1/echauffement_etirement.PDF',
-                            filename: 'echauffement_etirement.PDF'
+                            path: '/src/assets/niveau1/Exercices Echauffement et Etirement.pdf',
+                            filename: 'Exercices Echauffement et Etirement.pdf'
                           },
                           { 
                             title: 'Echauffement moreux', 
                             icon: '📄',
-                            path: '/assets/niveau1/echauffement_moreux.PDF',
-                            filename: 'echauffement_moreux.PDF'
+                            path: '/src/assets/niveau1/echauffement-mourenx.pdf',
+                            filename: 'echauffement-mourenx.pdf'
                           },
                           { 
                             title: 'Guide Pratique PPG VOLLEY BALL', 
                             icon: '📄',
-                            path: '/assets/niveau1/guide_ppg.PDF',
-                            filename: 'guide_ppg.PDF'
+                            path: '/src/assets/niveau1/Guide Pratique PPG VOLLEY BALL.pdf',
+                            filename: 'Guide Pratique PPG VOLLEY BALL.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -682,14 +683,14 @@ const Level1: React.FC = () => {
                           { 
                             title: 'FIVB_Coach_Manual_FR 1 FIVB', 
                             icon: '📄',
-                            path: '/assets/niveau1/fivb_coach_manual.PDF',
-                            filename: 'fivb_coach_manual.PDF'
+                            path: '/src/assets/niveau1/FIVB_Coach_Manual_FR 1 FIVB.pdf',
+                            filename: 'FIVB_Coach_Manual_FR 1 FIVB.pdf'
                           },
                           { 
                             title: 'Volley ball regles terrain technique', 
                             icon: '📄',
-                            path: '/assets/niveau1/regles_terrain_technique.PDF',
-                            filename: 'regles_terrain_technique.PDF'
+                            path: '/src/assets/niveau1/Volleyball DE A à Z.pdf',
+                            filename: 'Volleyball DE A à Z.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">

@@ -82,6 +82,14 @@ const Navbar: React.FC = () => {
                         Admin Panel
                       </Link>
                     )}
+                   
+                    <Link
+                      to="/certificates"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      Certificates
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

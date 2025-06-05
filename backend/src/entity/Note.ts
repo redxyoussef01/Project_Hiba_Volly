@@ -10,6 +10,9 @@ export class Note {
   @Column()
   note: number;
 
+  @Column({ default: false })
+  certificate: boolean;
+
   @ManyToOne(() => Quiz, (quiz) => quiz.id)
   quiz: Quiz;
 

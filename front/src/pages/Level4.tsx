@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Level4: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
-
+  const quizId = 4;
   const tabs = [
     { title: "Entraîneurs de haut niveau", id: 0 },
     { title: "Gestion de groupe", id: 1 },
@@ -15,7 +15,8 @@ const Level4: React.FC = () => {
 
   const handleTabClick = (tabId: number) => {
     if (tabId === 4) {
-      navigate('/quiz');
+      localStorage.setItem('currentQuizId', quizId.toString());
+      navigate(`/test/${quizId}`);
     } else {
       setActiveTab(tabId);
     }
@@ -73,26 +74,26 @@ const Level4: React.FC = () => {
                           { 
                             title: 'Manuel Canada Niveau 4', 
                             icon: '📄',
-                            path: '/assets/niveau4/manuel_canada_niv4.pdf',
+                            path: '/src/assets/niveau4/manuel_canada_niv4.pdf',
                             filename: 'manuel_canada_niv4.pdf'
                           },
                           { 
                             title: 'Manuel des Opérations et Trousse d\'Évaluation', 
                             icon: '📄',
-                            path: '/assets/niveau4/manuel_operations.pdf',
-                            filename: 'manuel_operations.pdf'
+                            path: '/src/assets/niveau4/MANUEL DES OPERATIONS ET TROUSSE DEVALUATION.pdf',
+                            filename: 'MANUEL DES OPERATIONS ET TROUSSE DEVALUATION.pdf'
                           },
                           { 
                             title: 'Outils Entraineurs Dossier FAVB', 
                             icon: '📄',
-                            path: '/assets/niveau4/outils_entraineurs_favb.pdf',
-                            filename: 'outils_entraineurs_favb.pdf'
+                            path: '/src/assets/niveau4/OUTILS ENTRAINEURS Dossier FAVB.pdf',
+                            filename: 'OUTILS ENTRAINEURS Dossier FAVB.pdf'
                           },
                           { 
                             title: 'La Préparation Physique', 
                             icon: '📄',
-                            path: '/assets/niveau4/preparation_physique.pdf',
-                            filename: 'preparation_physique.pdf'
+                            path: '/src/assets/niveau4/la preparation physique.pdf',
+                            filename: 'la preparation physique.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -125,20 +126,20 @@ const Level4: React.FC = () => {
                           { 
                             title: 'Leadership et gestion d\'équipe en milieu sportif', 
                             icon: '📄',
-                            path: '/assets/niveau4/leadership_gestion.pdf',
-                            filename: 'leadership_gestion.pdf'
+                            path: '/src/assets/niveau4/Leadership et gestion dequipe au milieu sportif.pdf',
+                            filename: 'Leadership et gestion dequipe au milieu sportif.pdf'
                           },
                           { 
                             title: 'Le leadership 2', 
                             icon: '📄',
-                            path: '/assets/niveau4/leadership2.pdf',
-                            filename: 'leadership2.pdf'
+                            path: '/src/assets/niveau4/Le leadership 2.pdf',
+                            filename: 'Le leadership 2.pdf'
                           },
                           { 
                             title: 'Fiche outil Cohésion de groupe', 
                             icon: '📄',
-                            path: '/assets/niveau4/cohesion_groupe.pdf',
-                            filename: 'cohesion_groupe.pdf'
+                            path: '/src/assets/niveau4/Fiche outil Cohésion de groupe.pdf',
+                            filename: 'Fiche outil Cohésion de groupe.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -185,8 +186,8 @@ const Level4: React.FC = () => {
                           { 
                             title: 'Pathologies du volleyeur et conseils à l\'officine', 
                             icon: '📄',
-                            path: '/assets/niveau4/pathologies_volleyeur.pdf',
-                            filename: 'pathologies_volleyeur.pdf'
+                            path: '/src/assets/niveau4/Pathologies du volleyeur et conseils a lofficine.pdf',
+                            filename: 'Pathologies du volleyeur et conseils a lofficine.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -219,14 +220,14 @@ const Level4: React.FC = () => {
                           { 
                             title: 'Cahier de l\'entraîneur', 
                             icon: '📄',
-                            path: '/assets/niveau4/cahier_entraineur.pdf',
-                            filename: 'cahier_entraineur.pdf'
+                            path: '/src/assets/niveau4/CAHIER DE L\'ENTRAINEUR.pdf',
+                            filename: 'CAHIER DE L\'ENTRAINEUR.pdf'
                           },
                           { 
                             title: 'Exercices VB', 
                             icon: '📄',
-                            path: '/assets/niveau4/exercices_vb.pdf',
-                            filename: 'exercices_vb.pdf'
+                            path: '/src/assets/niveau4/exercices vb.pdf',
+                            filename: 'exercices vb.pdf'
                           }
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">

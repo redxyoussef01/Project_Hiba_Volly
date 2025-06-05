@@ -20,7 +20,7 @@ export const AppDataSource = new DataSource({
   username: "root",
   password: "root",  // Using 'root' as the password
   database: "quiz",
-  synchronize: true,
+  synchronize: true, // Changed to false to prevent automatic table creation
   logging: true,
   entities: [User, Question, Quiz, Note, Account, Enroll],
   migrations: [],
@@ -31,19 +31,32 @@ export const AppDataSource = new DataSource({
     queueLimit: 0
   }
 });
-AppDataSource.initialize()
-  .then(async () => {
-    console.log("Connection initialized with database...");
-  })
-  .catch((error) => console.log(error));
 
-export const getDataSource = (delay = 3000): Promise<DataSource> => {
-  if (AppDataSource.isInitialized) return Promise.resolve(AppDataSource);
+// Initialize the database connection
+export const initializeDatabase = async () => {
+  try {
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+      console.log("Connection initialized with database...");
+    }
+    return AppDataSource;
+  } catch (error) {
+    console.error("Error during database initialization:", error);
+    throw error;
+  }
+};
+
+export const getDataSource = async (delay = 3000): Promise<DataSource> => {
+  if (AppDataSource.isInitialized) return AppDataSource;
 
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (AppDataSource.isInitialized) resolve(AppDataSource);
-      else reject("Failed to create connection with database");
+    setTimeout(async () => {
+      try {
+        const dataSource = await initializeDatabase();
+        resolve(dataSource);
+      } catch (error) {
+        reject("Failed to create connection with database");
+      }
     }, delay);
   });
 };
