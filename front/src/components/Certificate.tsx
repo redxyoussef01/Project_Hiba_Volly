@@ -58,7 +58,7 @@ const Certificate: React.FC<CertificateProps> = ({
             <p className="text-lg mb-4">has successfully completed</p>
             <p className="text-xl font-bold mb-4">{quizTitle}</p>
             <p className="text-lg mb-4">with a score of</p>
-            <p className="text-2xl font-bold mb-4">{score}/{totalQuestions}</p>
+            <p className="text-2xl font-bold mb-4">{score}</p>
             <div className="mt-8">
               <p className="text-lg mb-2">Date: {date.toLocaleDateString()}</p>
             </div>
