@@ -143,7 +143,7 @@ const Test: React.FC = () => {
       // Save the result
       const noteResponse = await axios.post<NoteResponse>(`${config.apiUrl}/createNote`, {
         quizId: quiz.id,
-        userId:  localStorage.getItem('userID'), // Replace with actual user ID
+        userId:  localStorage.getItem('userId'), 
         note: score
       });
       console.log(noteResponse.data.noteId);

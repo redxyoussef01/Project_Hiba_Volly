@@ -30,9 +30,24 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-2">
-              <img src="/volleyball.svg" alt="VolleyMentor" className="h-8 w-8" />
-              <span className="text-xl font-bold">VolleyMentor</span>
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="relative w-12 h-12 sm:w-14 sm:h-14 transition-transform duration-300 group-hover:scale-110">
+                
+                  <img 
+                    src="/volleyball.png" 
+                    alt="VolleyMentor" 
+                    className="w-full h-full object-contain p-2"
+                  />
+                
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-tight group-hover:text-blue-200 transition-colors duration-300">
+                  VolleyMentor
+                </span>
+                <span className="text-xs text-blue-200 group-hover:text-white transition-colors duration-300">
+                  Excellence en Volleyball
+                </span>
+              </div>
             </Link>
           </div>
           
@@ -41,20 +56,20 @@ const Navbar: React.FC = () => {
             <div className="flex items-center space-x-8">
               <Link to="/" className="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <Home className="h-5 w-5 mr-1" />
-                Home
+                Accueil
               </Link>
               <Link to="/courses" className="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <BookOpen className="h-5 w-5 mr-1" />
-                Courses
+                Cours
               </Link>
               <Link to="/contact" className="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <User className="h-5 w-5 mr-1" />
-                Contact Us
+                Contact
               </Link>
               {isLoggedIn && userType === 'Professeur' && (
                 <Link to="/admin" className="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium flex items-center">
                   <Settings className="h-5 w-5 mr-1" />
-                  Admin
+                  Administration
                 </Link>
               )}
             </div>
@@ -79,7 +94,7 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <Settings className="h-4 w-4 mr-2" />
-                        Admin Panel
+                        Panneau Admin
                       </Link>
                     )}
                    
@@ -88,14 +103,14 @@ const Navbar: React.FC = () => {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       role="menuitem"
                     >
-                      Certificates
+                      Certificats
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
-                      Logout
+                      Déconnexion
                     </button>
                   </div>
                 )}
@@ -125,20 +140,20 @@ const Navbar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" className="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium flex items-center">
               <Home className="h-5 w-5 mr-2" />
-              Home
+              Accueil
             </Link>
             <Link to="/courses" className="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium flex items-center">
               <BookOpen className="h-5 w-5 mr-2" />
-              Courses
+              Cours
             </Link>
             <Link to="/contact" className="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium flex items-center">
               <User className="h-5 w-5 mr-2" />
-              Contact Us
+              Contact
             </Link>
             {isLoggedIn && userType === 'professeur' && (
               <Link to="/admin" className="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium flex items-center">
                 <Settings className="h-5 w-5 mr-2" />
-                Admin
+                Administration
               </Link>
             )}
             {isLoggedIn ? (
@@ -147,12 +162,12 @@ const Navbar: React.FC = () => {
                 className="w-full hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium flex items-center"
               >
                 <LogOut className="h-5 w-5 mr-2" />
-                Logout
+                Déconnexion
               </button>
             ) : (
               <Link to="/login" className="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium flex items-center">
                 <UserCircle className="h-5 w-5 mr-2" />
-                Login
+                Connexion
               </Link>
             )}
           </div>

@@ -9,29 +9,29 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">About VolleyMentor</h3>
+            <h3 className="text-lg font-semibold mb-4">À Propos de VolleyMentor</h3>
             <p className="text-gray-400">
-              Your premier destination for volleyball training and skill development. From beginners to elite players, we help you achieve your volleyball goals.
+              Votre destination de choix pour l'entraînement et le développement des compétences en volleyball. Des débutants aux joueurs d'élite, nous vous aidons à atteindre vos objectifs.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4">Liens Rapides</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-gray-400 hover:text-white transition-colors">
-                  Home
+                  Accueil
                 </Link>
               </li>
               <li>
                 <Link to="/courses" className="text-gray-400 hover:text-white transition-colors">
-                  Courses
+                  Cours
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
-                  Contact Us
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -39,10 +39,10 @@ const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+            <h3 className="text-lg font-semibold mb-4">Contactez-nous</h3>
             <div className="space-y-2 text-gray-400">
               <p>Email: info@volleymentor.com</p>
-              <p>Phone: +1 (555) 123-4567</p>
+              <p>Téléphone: +1 (555) 123-4567</p>
               <div className="flex space-x-4 mt-4">
                 <a href="#" className="hover:text-white transition-colors">
                   <Facebook className="h-5 w-5" />
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} VolleyMentor. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} VolleyMentor. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

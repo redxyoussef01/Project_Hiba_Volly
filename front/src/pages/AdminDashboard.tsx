@@ -36,7 +36,6 @@ interface Quiz {
   id: number;
   title: string;
   description: string;
-  makerId: number;
   temps: number;
   note: number;
 }
@@ -58,21 +57,16 @@ interface Enrollment {
 interface Note {
   id: number;
   note: number;
-  certificate: boolean;
-  totalQuestions: number;
-  passingScore: number;
-  hasPassed: boolean;
-  percentage: number;
-  quiz: {
-    id: number;
-    title: string;
-    description: string;
-  };
   user: {
     id: number;
     firstName: string;
     lastName: string;
   };
+  quiz: Quiz;
+  certificate?: boolean;
+  totalQuestions: number;
+  percentage: number;
+  passingScore: number;
 }
 
 interface Question {
@@ -294,308 +288,345 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+      {/* Header */}
+      <div className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord Administrateur</h1>
+        </div>
+      </div>
 
-        {/* Navigation Tabs */}
-        <div className="border-b border-gray-200 mb-8">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {/* Tabs */}
+        <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('enrollments')}
               className={`${
                 activeTab === 'enrollments'
-                  ? 'border-blue-500 text-blue-600'
+                  ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
-              <Users className="h-5 w-5 mr-2" />
-              Enrollments
+              Inscriptions
             </button>
             <button
               onClick={() => setActiveTab('certificates')}
               className={`${
                 activeTab === 'certificates'
-                  ? 'border-blue-500 text-blue-600'
+                  ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
-              <Award className="h-5 w-5 mr-2" />
-              Certificates
+              Certificats
             </button>
             <button
               onClick={() => setActiveTab('quizzes')}
               className={`${
                 activeTab === 'quizzes'
-                  ? 'border-blue-500 text-blue-600'
+                  ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
-              <FileText className="h-5 w-5 mr-2" />
-              Quizzes
+              Quiz
             </button>
           </nav>
         </div>
 
         {/* Content Sections */}
-        <div className="bg-white rounded-lg shadow">
-          {/* Enrollments Section */}
-          {activeTab === 'enrollments' && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Enrolled Students</h2>
-                <div className="flex space-x-4">
-                  <input
-                    type="text"
-                    placeholder="Search students..."
-                    className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              {loading ? (
-                <div className="text-center py-4">Loading enrollments...</div>
-              ) : error ? (
-                <div className="text-center py-4 text-red-600">{error}</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {enrollments.map((enrollment) => (
-                        <tr key={enrollment.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div>
+        <div className="mt-6">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 p-4 rounded-lg">
+              <p className="text-red-600 text-lg">{error}</p>
+            </div>
+          ) : (
+            <>
+              {/* Enrollments Tab */}
+              {activeTab === 'enrollments' && (
+                <div className="bg-white shadow rounded-lg">
+                  <div className="px-4 py-5 sm:p-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Liste des Inscriptions</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Étudiant
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Quiz
+                            </th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {enrollments.map((enrollment) => (
+                            <tr key={enrollment.id}>
+                              <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-medium text-gray-900">
                                   {enrollment.user.firstName} {enrollment.user.lastName}
                                 </div>
-                                <div className="text-sm text-gray-500">ID: {enrollment.user.id}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{enrollment.quiz.title}</div>
-                            <div className="text-sm text-gray-500">{enrollment.quiz.description}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button 
-                              onClick={() => handleDeleteEnrollment(enrollment.id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              Remove
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Certificates Section */}
-          {activeTab === 'certificates' && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Certificates</h2>
-                <div className="flex space-x-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="text-sm text-gray-900">{enrollment.quiz.title}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button
+                                  onClick={() => handleDeleteEnrollment(enrollment.id)}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  <Trash2 className="h-5 w-5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                  <span className="ml-2">Loading certificates...</span>
-                </div>
-              ) : error ? (
-                <div className="text-center py-4 text-red-600">{error}</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Student Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Quiz
-                        </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                          onClick={() => handleSort('note')}
-                        >
-                          <div className="flex items-center">
-                            Score
-                            <ArrowUpDown className="ml-1 h-4 w-4" />
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredNotes.map((note) => (
-                        <tr key={note.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
-                              {note.user.firstName} {note.user.lastName}
-                            </div>
-                            <div className="text-sm text-gray-500">ID: {note.user.id}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{note.quiz.title}</div>
-                            <div className="text-sm text-gray-500">{note.quiz.description}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
-                              {note.note}/{note.totalQuestions}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {note.percentage}% (Pass: {note.passingScore})
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               )}
-            </div>
-          )}
 
-          {/* Quizzes Section */}
-          {activeTab === 'quizzes' && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Quizzes</h2>
-                <button
-                  onClick={() => setShowQuizModal(true)}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                >
-                  <Plus className="h-5 w-5 mr-2" />
-                  Create Quiz
-                </button>
-              </div>
-              {loading ? (
-                <div className="text-center py-4">Loading quizzes...</div>
-              ) : error ? (
-                <div className="text-center py-4 text-red-600">{error}</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time (min)</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {quizzes.map((quiz) => (
-                        <tr key={quiz.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{quiz.title}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{quiz.description}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{quiz.temps}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{quiz.note}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button 
-                              onClick={() => handleAssignQuestions(quiz.id.toString())}
-                              className="text-blue-600 hover:text-blue-900 mr-4"
-                            >
-                              Assign Questions
-                            </button>
-                            <button className="text-blue-600 hover:text-blue-900">
-                              <Edit className="h-5 w-5" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              {/* Certificates Tab */}
+              {activeTab === 'certificates' && (
+                <div className="bg-white shadow rounded-lg">
+                  <div className="px-4 py-5 sm:p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-medium text-gray-900">Gestion des Certificats</h3>
+                      <div className="flex items-center space-x-4">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder="Rechercher..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          />
+                          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                        </div>
+                        <button
+                          onClick={() => handleSort('note')}
+                          className="flex items-center space-x-1 text-gray-500 hover:text-gray-700"
+                        >
+                          <span>Trier par Note</span>
+                          <ArrowUpDown className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Étudiant
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Quiz
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Note
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Note Requise
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Statut
+                            </th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {filteredNotes
+                            .filter(note => note.note > note.quiz.note)
+                            .map((note) => (
+                              <tr key={note.id}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {note.user.firstName} {note.user.lastName}
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4">
+                                  <div className="text-sm text-gray-900">{note.quiz.title}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm text-gray-900">{note.note}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm text-gray-900">{note.quiz.note}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  {note.certificate ? (
+                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                      Délivré
+                                    </span>
+                                  ) : (
+                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                      En attente
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                  <div className="flex justify-end space-x-2">
+                                    {note.certificate && (
+                                      <button
+                                        onClick={() => handleIssueCertificate(note.id)}
+                                        className="text-green-600 hover:text-green-900"
+                                      >
+                                        <CheckCircle className="h-5 w-5" />
+                                      </button>
+                                    )}
+                                   
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               )}
-            </div>
+
+              {/* Quizzes Tab */}
+              {activeTab === 'quizzes' && (
+                <div className="bg-white shadow rounded-lg">
+                  <div className="px-4 py-5 sm:p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-medium text-gray-900">Gestion des Quiz</h3>
+                      <button
+                        onClick={() => setShowQuizModal(true)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        <Plus className="h-5 w-5 mr-2" />
+                        Nouveau Quiz
+                      </button>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Titre
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Description
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Temps (min)
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Note Requise
+                            </th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {quizzes.map((quiz) => (
+                            <tr key={quiz.id}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">{quiz.title}</div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="text-sm text-gray-900">{quiz.description}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">{quiz.temps}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">{quiz.note}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button
+                                  onClick={() => handleAssignQuestions(quiz.id.toString())}
+                                  className="text-indigo-600 hover:text-indigo-900"
+                                >
+                                  <Edit className="h-5 w-5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
 
-      {/* Quiz Creation Modal */}
+      {/* Quiz Modal */}
       {showQuizModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center overflow-y-auto">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full my-8">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Quiz</h3>
-            <form onSubmit={handleQuizSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6">
+            <h2 className="text-2xl font-bold mb-4">Créer un Nouveau Quiz</h2>
+            <form onSubmit={handleQuizSubmit}>
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Quiz Title</label>
+                  <label className="block text-sm font-medium text-gray-700">Titre</label>
                   <input
                     type="text"
                     value={quizForm.title}
-                    onChange={(e) => setQuizForm({...quizForm, title: e.target.value})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setQuizForm({ ...quizForm, title: e.target.value })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Description</label>
-                  <input
-                    type="text"
+                  <textarea
                     value={quizForm.description}
-                    onChange={(e) => setQuizForm({...quizForm, description: e.target.value})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setQuizForm({ ...quizForm, description: e.target.value })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    rows={3}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Time (minutes)</label>
+                  <label className="block text-sm font-medium text-gray-700">Temps (minutes)</label>
                   <input
                     type="number"
                     value={quizForm.temps}
-                    onChange={(e) => setQuizForm({...quizForm, temps: parseInt(e.target.value)})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setQuizForm({ ...quizForm, temps: parseInt(e.target.value) })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Total Points</label>
+                  <label className="block text-sm font-medium text-gray-700">Note Requise</label>
                   <input
                     type="number"
                     value={quizForm.note}
-                    onChange={(e) => setQuizForm({...quizForm, note: parseInt(e.target.value)})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setQuizForm({ ...quizForm, note: parseInt(e.target.value) })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     required
                   />
                 </div>
               </div>
-
-              <div className="flex justify-end space-x-4 mt-6">
+              <div className="mt-6 flex justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => setShowQuizModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
                 >
-                  Create Quiz
+                  Créer
                 </button>
               </div>
             </form>
@@ -603,17 +634,17 @@ const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Question Assignment Modal */}
+      {/* Question Modal */}
       {showQuestionModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center overflow-y-auto">
-          <div className="bg-white rounded-lg p-6 max-w-4xl w-full my-8">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Add Questions to Quiz</h3>
-            <form onSubmit={handleQuestionSubmit} className="space-y-4">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-4xl w-full p-6">
+            <h2 className="text-2xl font-bold mb-4">Ajouter des Questions</h2>
+            <form onSubmit={handleQuestionSubmit}>
               {questions.map((question, index) => (
-                <div key={index} className="border rounded-lg p-4 mb-4">
+                <div key={index} className="mb-6 p-4 border rounded-lg">
                   <div className="flex justify-between items-center mb-4">
-                    <h5 className="text-sm font-medium text-gray-700">Question {index + 1}</h5>
-                    {questions.length > 1 && (
+                    <h3 className="text-lg font-medium">Question {index + 1}</h3>
+                    {index > 0 && (
                       <button
                         type="button"
                         onClick={() => removeQuestion(index)}
@@ -625,12 +656,12 @@ const AdminDashboard: React.FC = () => {
                   </div>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Question Text</label>
+                      <label className="block text-sm font-medium text-gray-700">Question</label>
                       <input
                         type="text"
                         value={question.qst}
                         onChange={(e) => updateQuestion(index, 'qst', e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         required
                       />
                     </div>
@@ -644,18 +675,18 @@ const AdminDashboard: React.FC = () => {
                             type="text"
                             value={question[`option${optionNum}` as keyof Question] as string}
                             onChange={(e) => updateQuestion(index, `option${optionNum}` as keyof Question, e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             required
                           />
                         </div>
                       ))}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Correct Answer</label>
+                      <label className="block text-sm font-medium text-gray-700">Réponse Correcte</label>
                       <select
                         value={question.answeris}
                         onChange={(e) => updateQuestion(index, 'answeris', parseInt(e.target.value))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         required
                       >
                         <option value={1}>Option 1</option>
@@ -667,32 +698,30 @@ const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
               ))}
-              <button
-                type="button"
-                onClick={addQuestion}
-                className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200"
-              >
-                <Plus className="h-5 w-5 mr-2" />
-                Add Question
-              </button>
-
-              <div className="flex justify-end space-x-4 mt-6">
+              <div className="flex justify-between items-center mt-6">
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowQuestionModal(false);
-                    setSelectedQuizId(null);
-                  }}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  onClick={addQuestion}
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
                 >
-                  Cancel
+                  <Plus className="h-5 w-5 mr-2" />
+                  Ajouter une Question
                 </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                >
-                  Add Questions
-                </button>
+                <div className="space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowQuestionModal(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Enregistrer
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -701,21 +730,23 @@ const AdminDashboard: React.FC = () => {
 
       {/* Certificate Modal */}
       {showCertificate && selectedNote && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg max-w-4xl w-full">
-            <Certificate
-              quizTitle={selectedNote.quiz.title}
-              score={selectedNote.note}
-              totalQuestions={selectedNote.totalQuestions}
-              userName={`${selectedNote.user.firstName} ${selectedNote.user.lastName}`}
-              date={new Date()}
-            />
-            <div className="mt-4 flex justify-end">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-4xl w-full overflow-hidden">
+            <div className="p-6">
+              <Certificate
+                quizTitle={selectedNote.quiz.title}
+                score={selectedNote.note}
+                totalQuestions={selectedNote.totalQuestions}
+                userName={`${selectedNote.user.firstName} ${selectedNote.user.lastName}`}
+                date={new Date()}
+              />
+            </div>
+            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-4">
               <button
                 onClick={() => setShowCertificate(false)}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Close
+                Fermer
               </button>
             </div>
           </div>

@@ -10,6 +10,7 @@ const Level4: React.FC = () => {
     { title: "Gestion de groupe", id: 1 },
     { title: "Pathologies", id: 2 },
     { title: "Préparation saison", id: 3 },
+    { title: "Programme  entrainement", id: 5 },
     { title: "Quiz", id: 4 }
   ];
 
@@ -229,6 +230,60 @@ const Level4: React.FC = () => {
                             path: '/src/assets/niveau4/exercices vb.pdf',
                             filename: 'exercices vb.pdf'
                           }
+                        ].map((pdf, index) => (
+                          <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <a 
+                              href={pdf.path}
+                              download={pdf.filename}
+                              className="flex items-center space-x-3 hover:text-blue-600"
+                            >
+                              <span className="text-2xl">{pdf.icon}</span>
+                              <span className="text-lg text-gray-700">{pdf.title}</span>
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+
+               {activeTab === 5 && (
+                <div className="space-y-8">
+                  <h2 className="text-3xl font-semibold mb-8 text-gray-700 border-b-2 border-blue-500 pb-3">
+                    Se préparer pour bien démarrer la saison
+                  </h2>
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-2xl font-semibold mb-6 text-blue-600">PDFs à télécharger</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {[
+                          { 
+                            title: 'Opération Reprise semaine 1', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/Operation Reprise s1.pdf',
+                            filename: 'Operation Reprise s1.pdf'
+                          },
+                          { 
+                            title: 'Opération Reprise semaine 2', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/ops2.pdf',
+                            filename: 'ops2.pdf'
+                          },
+                          { 
+                            title: 'Opération Reprise semaine 3', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/ops3.pdf',
+                            filename: 'ops3.pdf'
+                          },
+                          { 
+                            title: 'Exercices Opération Reprise semaine 4', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/ops4.pdf',
+                            filename: 'ops2.pdf'
+                          }
+
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
                             <a 

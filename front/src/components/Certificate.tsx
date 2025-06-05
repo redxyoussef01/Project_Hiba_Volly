@@ -43,7 +43,7 @@ const Certificate: React.FC<CertificateProps> = ({
       const imgY = (pdfHeight - imgHeight * ratio) / 2;
 
       pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-      pdf.save('certificate.pdf');
+      pdf.save('certificat.pdf');
     }
   };
 
@@ -52,12 +52,12 @@ const Certificate: React.FC<CertificateProps> = ({
       <div ref={certificateRef} className="bg-white p-4 rounded-lg shadow-lg max-w-2xl mx-auto">
         <div className="border-4 border-blue-600 p-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-blue-600 mb-4">Certificate of Completion</h1>
-            <p className="text-lg mb-4">This is to certify that</p>
+            <h1 className="text-3xl font-bold text-blue-600 mb-4">Certificat de Réussite</h1>
+            <p className="text-lg mb-4">Ce certificat est décerné à</p>
             <p className="text-2xl font-bold mb-4">{usernameString}</p>
-            <p className="text-lg mb-4">has successfully completed</p>
+            <p className="text-lg mb-4">pour avoir complété avec succès</p>
             <p className="text-xl font-bold mb-4">{quizTitle}</p>
-            <p className="text-lg mb-4">with a score of</p>
+            <p className="text-lg mb-4">avec un score de</p>
             <p className="text-2xl font-bold mb-4">{score}</p>
             <div className="mt-8">
               <p className="text-lg mb-2">Date: {date.toLocaleDateString()}</p>
@@ -70,7 +70,7 @@ const Certificate: React.FC<CertificateProps> = ({
           onClick={downloadPDF}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Download Certificate
+          Télécharger le Certificat
         </button>
       </div>
     </div>

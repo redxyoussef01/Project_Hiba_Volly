@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "yourais00@gmail.com",
-    pass: "orstdjmbgpqahpee"
+    user: "bouarfahiba798@gmail.com",
+    pass: "voukgdiacljnuhiq"
   },
   tls: {
     rejectUnauthorized: false
@@ -59,9 +59,9 @@ router.post('/contact', validateContact, async (req, res) => {
     const mailOptions = {
       from: {
         name: 'VolleyMentor Contact',
-        address: "yourais00@gmail.com"
+        address: "bouarfahiba798@gmail.com"
       },
-      to: "yourais00@gmail.com",
+      to: "bouarfahiba798@gmail.com",
       replyTo: email,
       subject: `Nouveau message de contact: ${subject}`,
       html: `
