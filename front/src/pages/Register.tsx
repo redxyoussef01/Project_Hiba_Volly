@@ -34,11 +34,11 @@ const Register = () => {
 
   const validateForm = () => {
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Les mots de passe ne correspondent pas');
       return false;
     }
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError('Le mot de passe doit contenir au moins 6 caractères');
       return false;
     }
     return true;
@@ -66,10 +66,10 @@ const Register = () => {
       localStorage.setItem('userId', response.data.id);
       localStorage.setItem('userType', response.data.type);
 
-      // Redirect to home page
+      // Redirect to login page
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      setError(err.response?.data?.error || 'Échec de l\'inscription. Veuillez réessayer.');
     } finally {
       setIsLoading(false);
     }
@@ -79,15 +79,15 @@ const Register = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your account
+          Créez votre compte
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Already have an account?{' '}
+          Vous avez déjà un compte ?{' '}
           <Link
             to="/login"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            Sign in
+            Connectez-vous
           </Link>
         </p>
       </div>
@@ -100,7 +100,7 @@ const Register = () => {
                 htmlFor="firstName"
                 className="block text-sm font-medium text-gray-700"
               >
-                First Name
+                Prénom
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -115,7 +115,7 @@ const Register = () => {
                   value={formData.firstName}
                   onChange={handleInputChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="John"
+                  placeholder="Jean"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ const Register = () => {
                 htmlFor="lastName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Last Name
+                Nom de famille
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -140,7 +140,7 @@ const Register = () => {
                   value={formData.lastName}
                   onChange={handleInputChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="Doe"
+                  placeholder="Dupont"
                 />
               </div>
             </div>
@@ -150,7 +150,7 @@ const Register = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email address
+                Adresse e-mail
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -165,7 +165,7 @@ const Register = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="you@example.com"
+                  placeholder="vous@exemple.com"
                 />
               </div>
             </div>
@@ -175,7 +175,7 @@ const Register = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Password
+                Mot de passe
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -213,7 +213,7 @@ const Register = () => {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-700"
               >
-                Confirm Password
+                Confirmer le mot de passe
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -262,7 +262,7 @@ const Register = () => {
                 disabled={isLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Creating account...' : 'Create account'}
+                {isLoading ? 'Création du compte...' : 'Créer un compte'}
               </button>
             </div>
           </form>
@@ -273,13 +273,12 @@ const Register = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-               
+                {/* Any content here would also be translated */}
               </div>
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-             
-
+              {/* Any content here would also be translated */}
             </div>
           </div>
         </div>
@@ -288,4 +287,4 @@ const Register = () => {
   );
 };
 
-export default Register; 
+export default Register;

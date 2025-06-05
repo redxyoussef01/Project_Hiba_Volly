@@ -100,15 +100,7 @@ const Home: React.FC = () => {
                     Découvrir nos Programmes
                     <ArrowUp className="ml-2 h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
-                  {!isLoggedIn && (
-                    <Link
-                      to="/register"
-                      className="w-full sm:w-auto inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-blue-500 text-base sm:text-lg font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
-                    >
-                      Commencer Maintenant
-                      <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6" />
-                    </Link>
-                  )}
+                  
                 </motion.div>
 
                 {/* Stats Section */}
@@ -162,7 +154,7 @@ const Home: React.FC = () => {
         ref={heroRef}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "25px" }}
+        viewport={{ once: true, margin: "10px" }}
         transition={{ duration: 0.8 }}
         className="relative text-white mt-12 md:mt-16 lg:mt-20"
       >

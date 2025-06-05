@@ -64,7 +64,7 @@ const Login = () => {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      setError(err.response?.data?.error || 'Échec de la connexion. Veuillez réessayer.');
     } finally {
       setIsLoading(false);
     }
@@ -74,15 +74,15 @@ const Login = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
+          Connectez-vous à votre compte
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
+          Ou{' '}
           <Link
             to="/register"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
-            create a new account
+            créez un nouveau compte
           </Link>
         </p>
       </div>
@@ -95,7 +95,7 @@ const Login = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email address
+                Adresse e-mail
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -110,7 +110,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="you@example.com"
+                  placeholder="vous@exemple.com"
                 />
               </div>
             </div>
@@ -120,7 +120,7 @@ const Login = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Password
+                Mot de passe
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -165,11 +165,9 @@ const Login = () => {
                   htmlFor="remember-me"
                   className="ml-2 block text-sm text-gray-900"
                 >
-                  Remember me
+                  Se souvenir de moi
                 </label>
               </div>
-
-              
             </div>
 
             {error && (
@@ -188,7 +186,7 @@ const Login = () => {
                 disabled={isLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading ? 'Connexion en cours...' : 'Se connecter'}
               </button>
             </div>
           </form>
@@ -199,11 +197,11 @@ const Login = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                
+                {/* Any content here would also be translated */}
               </div>
             </div>
 
-            
+            {/* Any content here would also be translated */}
           </div>
         </div>
       </div>
@@ -211,4 +209,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
