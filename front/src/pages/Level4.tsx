@@ -269,20 +269,51 @@ const Level4: React.FC = () => {
                             title: 'Opération Reprise semaine 2', 
                             icon: '📄',
                             path: '/src/assets/niveau4/ops2.pdf',
-                            filename: 'ops2.pdf'
+                            filename: 'Opération Reprise semaine 2.pdf'
                           },
                           { 
                             title: 'Opération Reprise semaine 3', 
                             icon: '📄',
                             path: '/src/assets/niveau4/ops3.pdf',
-                            filename: 'ops3.pdf'
+                            filename: 'Opération Reprise semaine 3.pdf'
                           },
                           { 
                             title: 'Exercices Opération Reprise semaine 4', 
                             icon: '📄',
                             path: '/src/assets/niveau4/ops4.pdf',
-                            filename: 'ops2.pdf'
-                          }
+                            filename: 'Exercices Opération Reprise semaine 4.pdf'
+                          },
+                           { 
+                            title: 'Travailler la reception', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/Travailler la reception.pdf',
+                            filename: 'Travailler la reception.pdf'
+                          },
+                           { 
+                            title: 'Travailler la relance', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/Travailler la relance.pdf',
+                            filename: 'Travailler la relance.pdf'
+                          },
+                           { 
+                            title: 'Travailler le bloc', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/Travailler le bloc.pdf',
+                            filename: 'Travailler le bloc.pdf'
+                          },
+                          { 
+                            title: 'Travailler le service', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/Travailler le service.pdf',
+                            filename: 'Travailler le service.pdf'
+                          },
+                          { 
+                            title: 'L’échauffement', 
+                            icon: '📄',
+                            path: '/src/assets/niveau4/Lechauffement.pdf',
+                            filename: 'L’échauffement.pdf.pdf'
+                          },
+
 
                         ].map((pdf, index) => (
                           <div key={index} className="bg-gray-50 p-6 rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">

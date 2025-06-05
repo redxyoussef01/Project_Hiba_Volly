@@ -162,7 +162,7 @@ const Home: React.FC = () => {
         ref={heroRef}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
+        viewport={{ once: true, margin: "25px" }}
         transition={{ duration: 0.8 }}
         className="relative text-white mt-12 md:mt-16 lg:mt-20"
       >
