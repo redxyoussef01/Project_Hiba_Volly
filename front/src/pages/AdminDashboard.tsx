@@ -731,7 +731,7 @@ const AdminDashboard: React.FC = () => {
   </div>
 )}
 
-// ... (rest of your code)
+
 
       {/* Certificate Modal */}
       {showCertificate && selectedNote && (
