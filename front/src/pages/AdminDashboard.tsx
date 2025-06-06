@@ -635,98 +635,103 @@ const AdminDashboard: React.FC = () => {
       )}
 
       {/* Question Modal */}
-      {showQuestionModal && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-4xl w-full p-6">
-            <h2 className="text-2xl font-bold mb-4">Ajouter des Questions</h2>
-            <form onSubmit={handleQuestionSubmit}>
-              {questions.map((question, index) => (
-                <div key={index} className="mb-6 p-4 border rounded-lg">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">Question {index + 1}</h3>
-                    {index > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => removeQuestion(index)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-                    )}
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Question</label>
+{showQuestionModal && (
+  <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-lg max-w-4xl w-full p-6">
+      <h2 className="text-2xl font-bold mb-4">Ajouter des Questions</h2>
+      <form onSubmit={handleQuestionSubmit}>
+        {/* ADD THIS SCROLLABLE CONTAINER */}
+        <div className="max-h-[70vh] overflow-y-auto pr-4"> {/* Added max-h and overflow-y-auto */}
+          {questions.map((question, index) => (
+            <div key={index} className="mb-6 p-4 border rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Question {index + 1}</h3>
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeQuestion(index)}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Question</label>
+                  <input
+                    type="text"
+                    value={question.qst}
+                    onChange={(e) => updateQuestion(index, 'qst', e.target.value)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[1, 2, 3, 4].map((optionNum) => (
+                    <div key={optionNum}>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Option {optionNum}
+                      </label>
                       <input
                         type="text"
-                        value={question.qst}
-                        onChange={(e) => updateQuestion(index, 'qst', e.target.value)}
+                        value={question[`option${optionNum}` as keyof Question] as string}
+                        onChange={(e) => updateQuestion(index, `option${optionNum}` as keyof Question, e.target.value)}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         required
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      {[1, 2, 3, 4].map((optionNum) => (
-                        <div key={optionNum}>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Option {optionNum}
-                          </label>
-                          <input
-                            type="text"
-                            value={question[`option${optionNum}` as keyof Question] as string}
-                            onChange={(e) => updateQuestion(index, `option${optionNum}` as keyof Question, e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            required
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Réponse Correcte</label>
-                      <select
-                        value={question.answeris}
-                        onChange={(e) => updateQuestion(index, 'answeris', parseInt(e.target.value))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        required
-                      >
-                        <option value={1}>Option 1</option>
-                        <option value={2}>Option 2</option>
-                        <option value={3}>Option 3</option>
-                        <option value={4}>Option 4</option>
-                      </select>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <div className="flex justify-between items-center mt-6">
-                <button
-                  type="button"
-                  onClick={addQuestion}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  <Plus className="h-5 w-5 mr-2" />
-                  Ajouter une Question
-                </button>
-                <div className="space-x-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowQuestionModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Réponse Correcte</label>
+                  <select
+                    value={question.answeris}
+                    onChange={(e) => updateQuestion(index, 'answeris', parseInt(e.target.value))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    required
                   >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                  >
-                    Enregistrer
-                  </button>
+                    <option value={1}>Option 1</option>
+                    <option value={2}>Option 2</option>
+                    <option value={3}>Option 3</option>
+                    <option value={4}>Option 4</option>
+                  </select>
                 </div>
               </div>
-            </form>
+            </div>
+          ))}
+        </div> {/* END OF SCROLLABLE CONTAINER */}
+        <div className="flex justify-between items-center mt-6">
+          <button
+            type="button"
+            onClick={addQuestion}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Ajouter une Question
+          </button>
+          <div className="space-x-3">
+            <button
+              type="button"
+              onClick={() => setShowQuestionModal(false)}
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            >
+              Enregistrer
+            </button>
           </div>
         </div>
-      )}
+      </form>
+    </div>
+  </div>
+)}
+
+// ... (rest of your code)
 
       {/* Certificate Modal */}
       {showCertificate && selectedNote && (
