@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy, Users, Clock, Star, ArrowUp } from 'lucide-react';
+import { ArrowRight, Trophy, Users, Star, ArrowUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import backgroundImage from '../assets/background/ENTRAINEUR.jpg';

@@ -5,49 +5,50 @@ import { ArrowRight, Clock, Users, Star } from 'lucide-react';
 const courses = [
   {
     id: 1,
-    title: 'Volleyball Fundamentals',
-    description: 'Master the basics of volleyball including serving, passing, and basic positioning.',
-    level: 'Level 1',
-    duration: '4 weeks',
+    title: 'Fondamentaux du Volleyball',
+    description: 'Maîtrisez les bases du volleyball, y compris le service, la passe et le positionnement de base.',
+    level: 'Niveau 1',
+    duration: '4 semaines',
     students: 1200,
     rating: 4.8,
     image: './src/assets/background/background1.jpg',
-    tags: ['Beginner', 'Fundamentals', 'Basic Skills']
+    tags: ['Débutant', 'Fondamentaux', 'Compétences de base']
   },
   {
     id: 2,
-    title: 'Intermediate Volleyball Techniques',
-    description: 'Learn advanced serving techniques, setting, and team coordination strategies.',
-    level: 'Level 2',
-    duration: '6 weeks',
+    title: 'Techniques Intermédiaires de Volleyball',
+    description: 'Apprenez les techniques de service avancées, la préparation et les stratégies de coordination d\'équipe.',
+    level: 'Niveau 2',
+    duration: '6 semaines',
     students: 850,
     rating: 4.7,
     image: './src/assets/background/background2.jpg',
-    tags: ['Intermediate', 'Advanced Skills', 'Team Play']
+    tags: ['Intermédiaire', 'Compétences avancées', 'Jeu d\'équipe']
   },
   {
     id: 3,
-    title: 'Advanced Volleyball Strategy',
-    description: 'Master complex game strategies, advanced blocking, and professional-level techniques.',
-    level: 'Level 3',
-    duration: '8 weeks',
+    title: 'Stratégie Avancée de Volleyball',
+    description: 'Maîtrisez les stratégies de jeu complexes, le contre avancé et les techniques de niveau professionnel.',
+    level: 'Niveau 3',
+    duration: '8 semaines',
     students: 450,
     rating: 4.9,
     image: './src/assets/background/background3.jpg',
-    tags: ['Advanced', 'Strategy', 'Professional']
+    tags: ['Avancé', 'Stratégie', 'Professionnel']
   },
   {
     id: 4,
-    title: 'Elite Volleyball Mastery',
-    description: 'Perfect your game with elite-level training, competition preparation, and mental conditioning.',
-    level: 'Level 4',
-    duration: '12 weeks',
+    title: 'Maîtrise Élite du Volleyball',
+    description: 'Perfectionnez votre jeu avec un entraînement de niveau élite, la préparation à la compétition et la préparation mentale.',
+    level: 'Niveau 4',
+    duration: '12 semaines',
     students: 200,
     rating: 5.0,
     image: './src/assets/background/background4.jpg',
-    tags: ['Elite', 'Competition', 'Mastery']
+    tags: ['Élite', 'Compétition', 'Maîtrise']
   }
 ];
+
 
 const Courses: React.FC = () => {
   return (

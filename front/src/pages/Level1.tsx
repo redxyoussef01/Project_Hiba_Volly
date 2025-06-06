@@ -541,7 +541,7 @@ const Level1: React.FC = () => {
                       <div>
                         <h3 className="text-xl font-semibold mb-4 text-blue-600">Top 3 des exercices de volley-ball pour débutants</h3>
                         <p className="text-gray-600 mb-4">
-                          VolleyballXL a répertorié 3 exercices pour débutants, que vous pouvez réaliser immédiatement. Gardez à l'esprit que 
+                          Volleyball a répertorié 3 exercices pour débutants, que vous pouvez réaliser immédiatement. Gardez à l'esprit que 
                           le terme débutants signifie quelque chose de différent pour chacun. Car vous pouvez être débutant en tant qu'enfant, 
                           mais aussi en tant qu'adulte de 30 ans qui va jouer au volley-ball pour la première fois. Astuce : utilisez le filtre 
                           de VolleyballXL dans les exercices et filtrez par âge. Cela vous aide à faire une bonne sélection.
